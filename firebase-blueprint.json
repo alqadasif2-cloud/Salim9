@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "CommunityUser": {
+      "title": "CommunityUser",
+      "description": "Registered user, moderator, or owner profile and credentials.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number", "description": "Numeric unique user identifier" },
+        "username": { "type": "string", "description": "Unique login username" },
+        "displayName": { "type": "string", "description": "Display name shown in chat and leaderboard" },
+        "role": { "type": "string", "enum": ["owner", "moderator", "user", "guest"] },
+        "avatarUrl": { "type": "string" },
+        "warningsCount": { "type": "number" },
+        "isRestrictedAdmin": { "type": "boolean" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "username", "displayName", "role"]
+    },
+    "CommunityChannel": {
+      "title": "CommunityChannel",
+      "description": "Trading discussion or signals channel with membership and visibility settings.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "password": { "type": "string" },
+        "isOpenPublic": { "type": "boolean" },
+        "isPrivate": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public", "visible", "hidden"] },
+        "allowedMemberIds": { "type": "array" },
+        "memberIds": { "type": "array" },
+        "imageUrl": { "type": "string" },
+        "storagePath": { "type": "string" },
+        "displayMemberCount": { "type": "number" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "name", "visibility"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Channel message with optional attachments and reactions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "channelId": { "type": "string" },
+        "senderId": { "type": "number" },
+        "senderName": { "type": "string" },
+        "senderRole": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "channelId", "senderId", "timestamp"]
+    },
+    "PrivateMessage": {
+      "title": "PrivateMessage",
+      "description": "Direct 1-to-1 private chat message.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "conversationId": { "type": "string" },
+        "senderId": { "type": "number" },
+        "receiverId": { "type": "number" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "senderId", "receiverId", "timestamp"]
+    },
+    "UserChallenge": {
+      "title": "UserChallenge",
+      "description": "User 150-milestone trading challenge progress and trades.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "number" },
+        "username": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["userId"]
+    },
+    "AppUpdate": {
+      "title": "AppUpdate",
+      "description": "Android APK release metadata for in-app updates.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "versionCode": { "type": "number" },
+        "versionName": { "type": "string" },
+        "downloadUrl": { "type": "string" }
+      },
+      "required": ["versionCode", "versionName"]
+    }
+  },
+  "firestore": {
+    "/community_users/{userId}": {
+      "schema": { "$ref": "#/entities/CommunityUser" },
+      "description": "Canonical user accounts synced across Web and Android APK clients."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/CommunityUser" },
+      "description": "Server-side user records mirror."
+    },
+    "/community_channels/{channelId}": {
+      "schema": { "$ref": "#/entities/CommunityChannel" },
+      "description": "Canonical trading channels and member access lists."
+    },
+    "/channels/{channelId}": {
+      "schema": { "$ref": "#/entities/CommunityChannel" },
+      "description": "Server-side channel records mirror."
+    },
+    "/chat_messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Channel chat messages."
+    },
+    "/private_messages/{messageId}": {
+      "schema": { "$ref": "#/entities/PrivateMessage" },
+      "description": "Direct messages between users."
+    },
+    "/user_challenges/{userId}": {
+      "schema": { "$ref": "#/entities/UserChallenge" },
+      "description": "Trading challenge progress per user."
+    },
+    "/app_updates/{docId}": {
+      "schema": { "$ref": "#/entities/AppUpdate" },
+      "description": "Published APK update metadata."
+    }
+  }
+}

@@ -1,0 +1,126 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Users & Community Profiles
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    match /community_users/{userId} {
+      allow read, write: if true;
+    }
+
+    // 2. Channels & Discussion Rooms
+    match /channels/{channelId} {
+      allow read, write: if true;
+
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    match /community_channels/{channelId} {
+      allow read, write: if true;
+
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    // 3. Flat Public Chat Messages
+    match /chat_messages/{messageId} {
+      allow read, write: if true;
+    }
+
+    // 4. Private Messages & 1-on-1 Direct Chats
+    match /private_messages/{messageId} {
+      allow read, write: if true;
+    }
+
+    match /private_conversations/{pairKey} {
+      allow read, write: if true;
+
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    // 5. Challenges & Milestone Stations
+    match /challenges/{challengeId} {
+      allow read, write: if true;
+
+      match /trades/{tradeId} {
+        allow read, write: if true;
+      }
+    }
+
+    match /user_challenges/{userId} {
+      allow read, write: if true;
+
+      match /trades/{tradeId} {
+        allow read, write: if true;
+      }
+    }
+
+    // 6. Subscriptions, Plans & Consents
+    match /subscription_plans/{planId} {
+      allow read, write: if true;
+    }
+
+    match /subscription_audit_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    match /subscription_consents/{consentId} {
+      allow read, write: if true;
+    }
+
+    // 7. Guests, Counters & Support Config
+    match /guest_identities/{id} {
+      allow read, write: if true;
+    }
+
+    match /counters/{id} {
+      allow read, write: if true;
+    }
+
+    match /guest_support_config/{id} {
+      allow read, write: if true;
+    }
+
+    // 8. Notifications & FCM Device Tokens
+    match /community_notifications/{docId} {
+      allow read, write: if true;
+    }
+
+    match /notifications/{docId} {
+      allow read, write: if true;
+    }
+
+    // 9. Warnings & Moderation Reports
+    match /user_warnings/{warningId} {
+      allow read, write: if true;
+    }
+
+    // 10. Media Files & Storage Attachments
+    match /media_files/{fileId} {
+      allow read, write: if true;
+    }
+
+    // 11. Application Updates & Release Metadata
+    match /app_updates/{docId} {
+      allow read, write: if true;
+    }
+
+    // 12. System Health
+    match /_system_health/{docId} {
+      allow read, write: if true;
+    }
+
+    // 13. Default Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
