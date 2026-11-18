@@ -28,6 +28,48 @@
           localStorage.removeItem('sami_auth_user_session');
           localStorage.removeItem('sami_active_session');
         }
+        if (!localStorage.getItem('sami_defaults_purged_v1')) {
+          const defNames = new Set([
+            'hani alqadasi','eslam alqadasi','omar ali','ahmed saleh','mohammed ali',
+            'khaled nasser','yasser ahmed','ali hassan','abdullah salim','faisal omar',
+            'mahmoud adel','tareq salem','zaid ahmed','noor ali','amjad salim',
+            'saleh omar','nasser ali','tariq90','yazan salim'
+          ]);
+          const isDefUser = (u) => {
+            if (!u || typeof u !== 'object') return false;
+            const id = Number(u.id);
+            const un = String(u.username || '').trim().toLowerCase();
+            return id >= 2 && id <= 20 && defNames.has(un);
+          };
+          if (uCache) {
+            try {
+              const arr = JSON.parse(uCache);
+              if (Array.isArray(arr)) {
+                localStorage.setItem('sami_cloud_users_cache_v1', JSON.stringify(arr.filter((u) => !isDefUser(u))));
+              }
+            } catch {}
+          }
+          const sessRaw = localStorage.getItem('sami_auth_user_session');
+          if (sessRaw) {
+            try {
+              if (isDefUser(JSON.parse(sessRaw))) {
+                localStorage.removeItem('sami_auth_user_session');
+                localStorage.removeItem('sami_active_session');
+              }
+            } catch {}
+          }
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (!k || (!k.includes('channels_cache') && !k.includes('cached_channels'))) continue;
+            try {
+              const list = JSON.parse(localStorage.getItem(k) || 'null');
+              if (Array.isArray(list)) {
+                localStorage.setItem(k, JSON.stringify(list.filter((c) => c && c.id !== 'channel_default_3000' && c.name !== 'دفعة الرحلة إلى 3000$')));
+              }
+            } catch {}
+          }
+          localStorage.setItem('sami_defaults_purged_v1', '1');
+        }
       } catch(e) {}
     </script>
     <link rel="stylesheet" crossorigin href="/assets/index-D5y8_Xmj.css">

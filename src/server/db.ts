@@ -758,25 +758,6 @@ const BASELINE_INITIAL_USERS: Array<{
   { id: 1, username: 'Salim', displayName: 'القائد Salim', password: '12345678', role: 'owner' },
   { id: 76, username: 'Salim0', displayName: 'Salim0', password: '767676', role: 'owner', isRestrictedAdmin: true },
   { id: 77, username: 'Salim00', displayName: 'Salim', password: '787878', role: 'owner', isRestrictedAdmin: true },
-  { id: 2, username: 'Hani Alqadasi', displayName: 'Hani Alqadasi', password: 'Hani33334', role: 'user' },
-  { id: 3, username: 'Eslam Alqadasi', displayName: 'Eslam Alqadasi', password: '55555555', role: 'user' },
-  { id: 4, username: 'Omar Ali', displayName: 'Omar Ali', password: 'Omar1234', role: 'user' },
-  { id: 5, username: 'Ahmed Saleh', displayName: 'Ahmed Saleh', password: 'Ahmed123', role: 'user' },
-  { id: 6, username: 'Mohammed Ali', displayName: 'Mohammed Ali', password: 'Mo2025', role: 'user' },
-  { id: 7, username: 'Khaled Nasser', displayName: 'Khaled Nasser', password: 'Khaled22', role: 'user' },
-  { id: 8, username: 'Yasser Ahmed', displayName: 'Yasser Ahmed', password: 'Yasser11', role: 'user' },
-  { id: 9, username: 'Ali Hassan', displayName: 'Ali Hassan', password: 'Ali2025', role: 'user' },
-  { id: 10, username: 'Abdullah Salim', displayName: 'Abdullah Salim', password: 'Abd12345', role: 'user' },
-  { id: 11, username: 'Faisal Omar', displayName: 'Faisal Omar', password: 'Faisal88', role: 'user' },
-  { id: 12, username: 'Mahmoud Adel', displayName: 'Mahmoud Adel', password: 'Mahmoud7', role: 'user' },
-  { id: 13, username: 'Tareq Salem', displayName: 'Tareq Salem', password: 'Tareq123', role: 'user' },
-  { id: 14, username: 'Zaid Ahmed', displayName: 'Zaid Ahmed', password: 'Zaid2025', role: 'user' },
-  { id: 15, username: 'Noor Ali', displayName: 'Noor Ali', password: 'Noor1234', role: 'user' },
-  { id: 16, username: 'Amjad Salim', displayName: 'Amjad Salim', password: 'Amjad555', role: 'user' },
-  { id: 17, username: 'Saleh Omar', displayName: 'Saleh Omar', password: 'Saleh2025', role: 'user' },
-  { id: 18, username: 'Nasser Ali', displayName: 'Nasser Ali', password: 'Nasser99', role: 'user' },
-  { id: 19, username: 'Tariq90', displayName: 'Tariq90', password: 'Tariq4141', role: 'user' },
-  { id: 20, username: 'Yazan Salim', displayName: 'Yazan Salim', password: 'Yazan2025', role: 'user' },
 ];
 
 let baselineSeedDone = false;
@@ -814,31 +795,9 @@ export async function ensureBaselineCloudSeed(): Promise<void> {
           batch.set(firestoreClient.collection('users').doc(String(u.id)), docData, { merge: true });
           diskStore.users[String(u.id)] = rec;
         }
-        const existingCh = await firestoreClient.collection('community_channels').limit(1).get();
-        if (existingCh.empty) {
-          const defaultMembers = Array.from({ length: 20 }, (_, i) => i + 1);
-          const defaultCh: ChannelRecord = {
-            id: 'channel_default_3000',
-            name: 'دفعة الرحلة إلى 3000$',
-            description: 'القناة الرئيسية لتحدي الوصول إلى 3000$.',
-            isPrivate: true,
-            isOpenPublic: false,
-            password: '3000',
-            imageUrl: null,
-            storagePath: null,
-            visibility: 'visible',
-            allowedMemberIds: defaultMembers,
-            memberIds: defaultMembers,
-            createdAt: now,
-            updatedAt: now,
-          };
-          batch.set(firestoreClient.collection('community_channels').doc(defaultCh.id), defaultCh, { merge: true });
-          batch.set(firestoreClient.collection('channels').doc(defaultCh.id), defaultCh, { merge: true });
-          diskStore.channels[defaultCh.id] = defaultCh;
-        }
         await batch.commit();
         saveLocalDiskStore(diskStore);
-        console.log('[Salim DB] Seeded initial baseline users and default channel into Cloud Firestore.');
+        console.log('[Salim DB] Seeded baseline leader accounts into Cloud Firestore.');
       } else {
         // Ensure Salim0 (ID 76) and Salim00 (ID 77) exist in Cloud Firestore if DB was seeded earlier
         for (const extraId of [76, 77]) {
